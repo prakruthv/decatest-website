@@ -1,4 +1,3 @@
-
 const firebaseConfig = {
   apiKey: "AIzaSyDG7V5L4jfRG9LYh_vqT7lsPYOBGVIsOqc",
   authDomain: "deca-test-website.firebaseapp.com",
