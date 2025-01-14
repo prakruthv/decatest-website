@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { db } from "./firebaseConfig";
-import { doc, getDoc, setDoc } from "firebase/firestore";
 import questions from "./questions";
+import { auth, db } from "./firebase"; // Import Firebase authentication and Firestore
+import { collection, addDoc, getDocs } from "firebase/firestore"; // Firestore functions
+import "./styles.css";
 
 function Quiz({ user }) {
   const [currentQuestion, setCurrentQuestion] = useState(null);
