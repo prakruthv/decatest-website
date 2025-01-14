@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { auth } from "./firebaseConfig";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import Login from "./Login";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Quiz from "./Quiz";
+import Login from "./Login";
+import "./styles.css";
+import { auth } from "./firebase"; // Import Firebase authentication
 
 function App() {
   const [user, setUser] = useState(null);
