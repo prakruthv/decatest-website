@@ -1,53 +1,62 @@
-import React, { useState } from "react";
-import questions from "./questions";
+import React, { useState } from 'react';
+import questions from './questions';
 
 function App() {
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [showExplanation, setShowExplanation] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [score, setScore] = useState(0);
+  const [showResults, setShowResults] = useState(false);
 
-    const question = questions[currentQuestionIndex];
+  const handleAnswerSelection = (answer) => {
+    setSelectedAnswer(answer);
+  };
 
-    const handleAnswerClick = (index) => {
-        setSelectedAnswer(index);
-        setShowExplanation(true);
-    };
+  const handleNextQuestion = () => {
+    if (selectedAnswer === questions[currentQuestionIndex].correctAnswer) {
+      setScore(score + 1);
+    }
 
-    const handleNextQuestion = () => {
-        setSelectedAnswer(null);
-        setShowExplanation(false);
-        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
-    };
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < questions.length) {
+      setCurrentQuestionIndex(nextIndex);
+      setSelectedAnswer(null);
+    } else {
+      setShowResults(true);
+    }
+  };
 
-    return (
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
-            <h1>DECA Practice Test</h1>
-            <h2>{question.question}</h2>
-            {question.options.map((option, index) => (
-                <button 
-                    key={index} 
-                    onClick={() => handleAnswerClick(index)}
-                    style={{
-                        display: "block",
-                        margin: "10px auto",
-                        padding: "10px",
-                        fontSize: "16px"
-                    }}
+  return (
+    <div>
+      <h1>DECA Practice Test</h1>
+      {!showResults ? (
+        <div>
+          <h2>{questions[currentQuestionIndex].question}</h2>
+          <ul>
+            {questions[currentQuestionIndex].choices.map((choice, index) => (
+              <li key={index}>
+                <button
+                  onClick={() => handleAnswerSelection(choice)}
+                  style={{
+                    backgroundColor: selectedAnswer === choice ? 'lightblue' : 'white',
+                  }}
                 >
-                    {option}
+                  {choice}
                 </button>
+              </li>
             ))}
-            {showExplanation && (
-                <div>
-                    <p>
-                        <strong>Correct Answer:</strong> {question.options[question.correctAnswer]}
-                    </p>
-                    <p>{question.explanation}</p>
-                    <button onClick={handleNextQuestion}>Next Question</button>
-                </div>
-            )}
+          </ul>
+          <button onClick={handleNextQuestion} disabled={!selectedAnswer}>
+            Next Question
+          </button>
         </div>
-    );
+      ) : (
+        <div>
+          <h2>Quiz Completed!</h2>
+          <p>Your Score: {score} / {questions.length}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default App;
