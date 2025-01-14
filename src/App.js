@@ -8,6 +8,8 @@ function App() {
   const [feedback, setFeedback] = useState('');
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
   const [showNext, setShowNext] = useState(false);
+  const [totalAnswered, setTotalAnswered] = useState(0);
+  const [totalCorrect, setTotalCorrect] = useState(0);
 
   // Shuffle questions on mount
   useEffect(() => {
@@ -26,13 +28,17 @@ function App() {
 
   // Handle answer submission
   const handleSubmit = () => {
-    if (selectedAnswer === null) return; // Prevent submission if no answer is selected
+    if (selectedAnswer === null) return;
 
     const currentQuestion = questions[currentIndex];
     const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
 
     // Provide immediate feedback
     setFeedback(isCorrect ? "✅ Correct!" : `❌ Incorrect. The correct answer is: ${currentQuestion.correctAnswer}`);
+
+    // Update progress
+    setTotalAnswered(totalAnswered + 1);
+    if (isCorrect) setTotalCorrect(totalCorrect + 1);
 
     // Track answered questions
     setAnsweredQuestions([...answeredQuestions, currentQuestion]);
@@ -48,7 +54,7 @@ function App() {
     setSelectedAnswer(null);
 
     if (answeredQuestions.length + 1 >= questions.length) {
-      // If all questions are answered, recycle them
+      // If all questions are answered, reset tracking and reshuffle
       setAnsweredQuestions([]);
       setQuestions(shuffleArray([...questionsData]));
       setCurrentIndex(0);
@@ -59,9 +65,16 @@ function App() {
 
   return (
     <div className="quiz-container">
+      <h2>DECA Practice Test</h2>
+      <div className="stats">
+        <p>Questions Answered: {totalAnswered}</p>
+        <p>Correct Answers: {totalCorrect}</p>
+        <p>Accuracy: {totalAnswered > 0 ? ((totalCorrect / totalAnswered) * 100).toFixed(1) + "%" : "N/A"}</p>
+      </div>
+
       {questions.length > 0 && (
         <>
-          <h2>{questions[currentIndex].question}</h2>
+          <h3>{questions[currentIndex].question}</h3>
           <div className="choices">
             {questions[currentIndex].choices.map((choice, index) => (
               <label key={index} className="choice-item">
@@ -71,7 +84,7 @@ function App() {
                   value={choice}
                   checked={selectedAnswer === choice}
                   onChange={() => handleAnswerSelect(choice)}
-                  disabled={showNext} // Disable selection after submission
+                  disabled={showNext}
                 />
                 {choice}
               </label>
