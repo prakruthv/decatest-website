@@ -1,38 +1,45 @@
 import React, { useState } from "react";
 import { auth } from "./firebase";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import "./styles.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isRegister, setIsRegister] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleAuth = async (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     try {
-      if (isRegister) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-    } catch (error) {
-      alert(error.message);
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleSignup = async () => {
+    try {
+      await auth.createUserWithEmailAndPassword(email, password);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
     <div>
-      <h2>{isRegister ? "Register" : "Login"}</h2>
-      <form onSubmit={handleAuth}>
-        <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">{isRegister ? "Sign Up" : "Login"}</button>
-      </form>
-      <button onClick={() => setIsRegister(!isRegister)}>
-        {isRegister ? "Already have an account? Login" : "Need an account? Sign Up"}
-      </button>
+      <h2>Login or Sign Up</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleSignup}>Sign Up</button>
+      {error && <p>{error}</p>}
     </div>
   );
 }
