@@ -1,30 +1,22 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Quiz from "./Quiz";
-import Login from "./Login";
-import "./styles.css";
+import React, { useState, useEffect } from "react";
 import { auth } from "./firebase"; // Import Firebase authentication
+import Login from "./Login";
+import Quiz from "./Quiz";
 
 function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    // Check Firebase authentication state when the app loads
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
     });
-    return () => unsubscribe();
+    return () => unsubscribe(); // Cleanup on unmount
   }, []);
 
   return (
     <div className="App">
-      {user ? (
-        <>
-          <button onClick={() => signOut(auth)}>Logout</button>
-          <Quiz user={user} />
-        </>
-      ) : (
-        <Login />
-      )}
+      {user ? <Quiz /> : <Login />}
     </div>
   );
 }
