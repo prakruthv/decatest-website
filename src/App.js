@@ -7,6 +7,7 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [answeredQuestions, setAnsweredQuestions] = useState([]);
+  const [showNext, setShowNext] = useState(false);
 
   // Shuffle questions on mount
   useEffect(() => {
@@ -18,38 +19,34 @@ function App() {
     return array.sort(() => Math.random() - 0.5);
   }
 
-  // Handle answer selection
-  const handleAnswerClick = (choice) => {
-    setSelectedAnswer(choice);
-  };
-
-  // Handle submission
-  const handleSubmit = () => {
-    if (selectedAnswer === null) return;
-
+  // Handle answer selection and submission
+  const handleSubmit = (choice) => {
     const currentQuestion = questions[currentIndex];
-    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-    
-    // Provide immediate feedback (Correct or Incorrect)
+    const isCorrect = choice === currentQuestion.correctAnswer;
+
+    // Provide immediate feedback
     setFeedback(isCorrect ? "✅ Correct!" : `❌ Incorrect. The correct answer is: ${currentQuestion.correctAnswer}`);
 
     // Track answered questions
     setAnsweredQuestions([...answeredQuestions, currentQuestion]);
 
-    // Delay before moving to the next question
-    setTimeout(() => {
-      setSelectedAnswer(null);
-      setFeedback('');
+    // Show "Next Question" button
+    setShowNext(true);
+  };
 
-      if (answeredQuestions.length + 1 >= questions.length) {
-        // If all questions are answered, recycle them
-        setAnsweredQuestions([]);
-        setQuestions(shuffleArray([...questionsData]));
-        setCurrentIndex(0);
-      } else {
-        setCurrentIndex(prevIndex => prevIndex + 1);
-      }
-    }, 2000); // 2-second delay to show feedback
+  // Move to next question
+  const handleNextQuestion = () => {
+    setFeedback('');
+    setShowNext(false);
+
+    if (answeredQuestions.length + 1 >= questions.length) {
+      // If all questions are answered, recycle them
+      setAnsweredQuestions([]);
+      setQuestions(shuffleArray([...questionsData]));
+      setCurrentIndex(0);
+    } else {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
   };
 
   return (
@@ -59,19 +56,19 @@ function App() {
           <h2>{questions[currentIndex].question}</h2>
           <div className="choices">
             {questions[currentIndex].choices.map((choice, index) => (
-              <button 
-                key={index} 
-                className={selectedAnswer === choice ? 'selected' : ''}
-                onClick={() => handleAnswerClick(choice)}
-              >
-                {choice}
-              </button>
+              <div key={index} className="choice-item">
+                <button 
+                  className="choice-btn"
+                  onClick={() => handleSubmit(choice)}
+                  disabled={showNext} // Disable after answer submission
+                >
+                  {choice}
+                </button>
+              </div>
             ))}
           </div>
-          <button className="submit-btn" onClick={handleSubmit} disabled={selectedAnswer === null}>
-            Submit
-          </button>
           {feedback && <p className="feedback">{feedback}</p>}
+          {showNext && <button className="next-btn" onClick={handleNextQuestion}>Next Question</button>}
         </>
       )}
     </div>
