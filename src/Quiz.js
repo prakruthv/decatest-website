@@ -1,76 +1,72 @@
-import React, { useState, useEffect } from "react";
-import questions from "./questions";
-import { auth, db } from "./firebase"; // Import Firebase authentication and Firestore
-import { collection, addDoc, getDocs } from "firebase/firestore"; // Firestore functions
-import "./styles.css";
+import React, { useState } from "react";
+import { auth } from "./firebase";
+import questions from "./questions"; // Assuming your questions are stored in questions.js
 
-function Quiz({ user }) {
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [answeredQuestions, setAnsweredQuestions] = useState([]);
+function Quiz() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [feedback, setFeedback] = useState("");
+  const [showResult, setShowResult] = useState(false);
+  const [score, setScore] = useState(0);
 
-  useEffect(() => {
-    if (user) {
-      loadUserProgress();
-    }
-  }, [user]);
-
-  const loadUserProgress = async () => {
-    const userRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userRef);
-    if (docSnap.exists()) {
-      setAnsweredQuestions(docSnap.data().answeredQuestions || []);
-    } else {
-      await setDoc(userRef, { answeredQuestions: [] });
-    }
-    getNextQuestion();
+  const handleAnswerSelect = (choice) => {
+    setSelectedAnswer(choice);
   };
 
-  const getNextQuestion = () => {
-    const remainingQuestions = questions.filter(q => !answeredQuestions.includes(q.question));
-    if (remainingQuestions.length === 0) {
-      setAnsweredQuestions([]);
-      getNextQuestion();
-    } else {
-      const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
-      setCurrentQuestion(remainingQuestions[randomIndex]);
-      setSelectedAnswer(null);
-      setFeedback("");
+  const handleSubmit = () => {
+    if (selectedAnswer === questions[currentQuestionIndex].correctAnswer) {
+      setScore(score + 1);
     }
+    setShowResult(true);
   };
 
-  const handleSubmit = async () => {
-    if (!selectedAnswer) return;
-    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-    setFeedback(isCorrect ? "Correct!" : `Wrong! The correct answer is: ${currentQuestion.correctAnswer}`);
+  const handleNextQuestion = () => {
+    setShowResult(false);
+    setSelectedAnswer(null);
+    setCurrentQuestionIndex((prev) => (prev + 1) % questions.length);
+  };
 
-    const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, { answeredQuestions: [...answeredQuestions, currentQuestion.question] }, { merge: true });
+  const handleLogout = () => {
+    auth.signOut();
   };
 
   return (
     <div>
-      {currentQuestion && (
-        <>
-          <h2>{currentQuestion.question}</h2>
-          {currentQuestion.choices.map((choice) => (
-            <div key={choice}>
-              <input
-                type="radio"
-                name="answer"
-                value={choice}
-                onChange={() => setSelectedAnswer(choice)}
-                checked={selectedAnswer === choice}
-              />
-              {choice}
-            </div>
-          ))}
-          <button onClick={handleSubmit} disabled={!selectedAnswer}>Submit</button>
-          <p>{feedback}</p>
-          {feedback && <button onClick={getNextQuestion}>Next Question</button>}
-        </>
+      <h2>Quiz</h2>
+      <button onClick={handleLogout}>Logout</button>
+
+      <div>
+        <p>{questions[currentQuestionIndex].question}</p>
+        {questions[currentQuestionIndex].choices.map((choice, index) => (
+          <div key={index}>
+            <input
+              type="radio"
+              name="answer"
+              value={choice}
+              onChange={() => handleAnswerSelect(choice)}
+              checked={selectedAnswer === choice}
+            />
+            {choice}
+          </div>
+        ))}
+      </div>
+
+      {!showResult ? (
+        <button onClick={handleSubmit} disabled={!selectedAnswer}>
+          Submit
+        </button>
+      ) : (
+        <div>
+          <p>
+            {selectedAnswer === questions[currentQuestionIndex].correctAnswer
+              ? "Correct!"
+              : "Incorrect!"}
+          </p>
+          <p>Correct Answer: {questions[currentQuestionIndex].correctAnswer}</p>
+          <button onClick={handleNextQuestion}>Next Question</button>
+        </div>
       )}
+
+      <p>Score: {score}</p>
     </div>
   );
 }
