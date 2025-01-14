@@ -18,11 +18,12 @@ function App() {
             {user ? (
                 <h1>Welcome, {user.displayName}!</h1>
             ) : (
-                <button onClick={signIn}>Sign in with Google</button>
+                <button onClick={signIn} style={{ padding: "10px", fontSize: "16px" }}>
+                    Sign in with Google
+                </button>
             )}
         </div>
     );
 }
 
 export default App;
-
