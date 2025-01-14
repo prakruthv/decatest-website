@@ -26,19 +26,17 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>DECA Practice Test</h1>
       {!showResults ? (
-        <div>
+        <div className="quiz-container">
           <h2>{questions[currentQuestionIndex].question}</h2>
           <ul>
             {questions[currentQuestionIndex].choices.map((choice, index) => (
               <li key={index}>
                 <button
                   onClick={() => handleAnswerSelection(choice)}
-                  style={{
-                    backgroundColor: selectedAnswer === choice ? 'lightblue' : 'white',
-                  }}
+                  className={selectedAnswer === choice ? "selected" : ""}
                 >
                   {choice}
                 </button>
@@ -50,7 +48,7 @@ function App() {
           </button>
         </div>
       ) : (
-        <div>
+        <div className="results-container">
           <h2>Quiz Completed!</h2>
           <p>Your Score: {score} / {questions.length}</p>
         </div>
