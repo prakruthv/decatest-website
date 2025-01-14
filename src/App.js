@@ -1,60 +1,21 @@
 import React, { useState } from 'react';
-import questions from './questions';
+import Quiz from './Quiz';
 
 function App() {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [score, setScore] = useState(0);
-  const [showResults, setShowResults] = useState(false);
+    const [startQuiz, setStartQuiz] = useState(false);
 
-  const handleAnswerSelection = (answer) => {
-    setSelectedAnswer(answer);
-  };
-
-  const handleNextQuestion = () => {
-    if (selectedAnswer === questions[currentQuestionIndex].correctAnswer) {
-      setScore(score + 1);
-    }
-
-    const nextIndex = currentQuestionIndex + 1;
-    if (nextIndex < questions.length) {
-      setCurrentQuestionIndex(nextIndex);
-      setSelectedAnswer(null);
-    } else {
-      setShowResults(true);
-    }
-  };
-
-  return (
-    <div className="container">
-      <h1>DECA Practice Test</h1>
-      {!showResults ? (
-        <div className="quiz-container">
-          <h2>{questions[currentQuestionIndex].question}</h2>
-          <ul>
-            {questions[currentQuestionIndex].choices.map((choice, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => handleAnswerSelection(choice)}
-                  className={selectedAnswer === choice ? "selected" : ""}
-                >
-                  {choice}
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button onClick={handleNextQuestion} disabled={!selectedAnswer}>
-            Next Question
-          </button>
+    return (
+        <div className="app">
+            {!startQuiz ? (
+                <div className="welcome-section">
+                    <h1>Welcome to the DECA Practice Test</h1>
+                    <button onClick={() => setStartQuiz(true)}>Start Quiz</button>
+                </div>
+            ) : (
+                <Quiz />
+            )}
         </div>
-      ) : (
-        <div className="results-container">
-          <h2>Quiz Completed!</h2>
-          <p>Your Score: {score} / {questions.length}</p>
-        </div>
-      )}
-    </div>
-  );
+    );
 }
 
 export default App;
