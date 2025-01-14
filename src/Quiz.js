@@ -1,58 +1,77 @@
-import React, { useState } from 'react';
-import questions from './questions';
+import React, { useState, useEffect } from "react";
+import { db } from "./firebaseConfig";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import questions from "./questions";
 
-const Quiz = () => {
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [score, setScore] = useState(0);
-    const [showScore, setShowScore] = useState(false);
+function Quiz({ user }) {
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [answeredQuestions, setAnsweredQuestions] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [feedback, setFeedback] = useState("");
 
-    const handleAnswerClick = (choice) => {
-        setSelectedAnswer(choice);
-    };
+  useEffect(() => {
+    if (user) {
+      loadUserProgress();
+    }
+  }, [user]);
 
-    const handleNextQuestion = () => {
-        if (selectedAnswer === questions[currentQuestion].correctAnswer) {
-            setScore(score + 1);
-        }
+  const loadUserProgress = async () => {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      setAnsweredQuestions(docSnap.data().answeredQuestions || []);
+    } else {
+      await setDoc(userRef, { answeredQuestions: [] });
+    }
+    getNextQuestion();
+  };
 
-        setSelectedAnswer(null);
+  const getNextQuestion = () => {
+    const remainingQuestions = questions.filter(q => !answeredQuestions.includes(q.question));
+    if (remainingQuestions.length === 0) {
+      setAnsweredQuestions([]);
+      getNextQuestion();
+    } else {
+      const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
+      setCurrentQuestion(remainingQuestions[randomIndex]);
+      setSelectedAnswer(null);
+      setFeedback("");
+    }
+  };
 
-        if (currentQuestion + 1 < questions.length) {
-            setCurrentQuestion(currentQuestion + 1);
-        } else {
-            setShowScore(true);
-        }
-    };
+  const handleSubmit = async () => {
+    if (!selectedAnswer) return;
+    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+    setFeedback(isCorrect ? "Correct!" : `Wrong! The correct answer is: ${currentQuestion.correctAnswer}`);
 
-    return (
-        <div className="quiz-container">
-            {showScore ? (
-                <div className="score-section">
-                    <h2>Your Score: {score} / {questions.length}</h2>
-                </div>
-            ) : (
-                <div className="question-section">
-                    <h2>Question {currentQuestion + 1} / {questions.length}</h2>
-                    <p>{questions[currentQuestion].question}</p>
-                    <div className="answer-section">
-                        {questions[currentQuestion].choices.map((choice, index) => (
-                            <button
-                                key={index}
-                                className={`answer-button ${selectedAnswer === choice ? 'selected' : ''}`}
-                                onClick={() => handleAnswerClick(choice)}
-                            >
-                                {choice}
-                            </button>
-                        ))}
-                    </div>
-                    <button className="next-button" onClick={handleNextQuestion} disabled={!selectedAnswer}>
-                        Next
-                    </button>
-                </div>
-            )}
-        </div>
-    );
-};
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, { answeredQuestions: [...answeredQuestions, currentQuestion.question] }, { merge: true });
+  };
+
+  return (
+    <div>
+      {currentQuestion && (
+        <>
+          <h2>{currentQuestion.question}</h2>
+          {currentQuestion.choices.map((choice) => (
+            <div key={choice}>
+              <input
+                type="radio"
+                name="answer"
+                value={choice}
+                onChange={() => setSelectedAnswer(choice)}
+                checked={selectedAnswer === choice}
+              />
+              {choice}
+            </div>
+          ))}
+          <button onClick={handleSubmit} disabled={!selectedAnswer}>Submit</button>
+          <p>{feedback}</p>
+          {feedback && <button onClick={getNextQuestion}>Next Question</button>}
+        </>
+      )}
+    </div>
+  );
+}
 
 export default Quiz;
