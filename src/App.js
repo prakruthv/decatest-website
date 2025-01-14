@@ -19,10 +19,17 @@ function App() {
     return array.sort(() => Math.random() - 0.5);
   }
 
-  // Handle answer selection and submission
-  const handleSubmit = (choice) => {
+  // Handle answer selection
+  const handleAnswerSelect = (choice) => {
+    setSelectedAnswer(choice);
+  };
+
+  // Handle answer submission
+  const handleSubmit = () => {
+    if (selectedAnswer === null) return; // Prevent submission if no answer is selected
+
     const currentQuestion = questions[currentIndex];
-    const isCorrect = choice === currentQuestion.correctAnswer;
+    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
 
     // Provide immediate feedback
     setFeedback(isCorrect ? "✅ Correct!" : `❌ Incorrect. The correct answer is: ${currentQuestion.correctAnswer}`);
@@ -38,6 +45,7 @@ function App() {
   const handleNextQuestion = () => {
     setFeedback('');
     setShowNext(false);
+    setSelectedAnswer(null);
 
     if (answeredQuestions.length + 1 >= questions.length) {
       // If all questions are answered, recycle them
@@ -56,17 +64,22 @@ function App() {
           <h2>{questions[currentIndex].question}</h2>
           <div className="choices">
             {questions[currentIndex].choices.map((choice, index) => (
-              <div key={index} className="choice-item">
-                <button 
-                  className="choice-btn"
-                  onClick={() => handleSubmit(choice)}
-                  disabled={showNext} // Disable after answer submission
-                >
-                  {choice}
-                </button>
-              </div>
+              <label key={index} className="choice-item">
+                <input
+                  type="radio"
+                  name="answer"
+                  value={choice}
+                  checked={selectedAnswer === choice}
+                  onChange={() => handleAnswerSelect(choice)}
+                  disabled={showNext} // Disable selection after submission
+                />
+                {choice}
+              </label>
             ))}
           </div>
+          <button className="submit-btn" onClick={handleSubmit} disabled={showNext || selectedAnswer === null}>
+            Submit
+          </button>
           {feedback && <p className="feedback">{feedback}</p>}
           {showNext && <button className="next-btn" onClick={handleNextQuestion}>Next Question</button>}
         </>
