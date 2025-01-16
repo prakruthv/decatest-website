@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import questions from "./questions";
 
 const Quiz = () => {
@@ -10,6 +10,23 @@ const Quiz = () => {
         totalQuestions: 0,
         correctAnswers: 0,
     });
+
+    useEffect(() => {
+        // Load progress from local storage
+        const savedProgress = JSON.parse(localStorage.getItem("quizProgress"));
+        if (savedProgress) {
+            setTracker(savedProgress.tracker);
+            setCurrentQuestionIndex(savedProgress.currentQuestionIndex);
+        }
+    }, []);
+
+    useEffect(() => {
+        // Save progress to local storage whenever tracker changes
+        localStorage.setItem(
+            "quizProgress",
+            JSON.stringify({ tracker, currentQuestionIndex })
+        );
+    }, [tracker, currentQuestionIndex]);
 
     const handleAnswerSubmit = () => {
         const currentQuestion = questions[currentQuestionIndex];
@@ -33,18 +50,18 @@ const Quiz = () => {
         setFeedback("");
         setSelectedAnswer("");
         setIsCorrect(null);
-        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+
+        // Randomize next question order
+        setCurrentQuestionIndex(
+            (prevIndex) => Math.floor(Math.random() * questions.length)
+        );
     };
 
     const currentQuestion = questions[currentQuestionIndex];
-    const accuracy =
-        tracker.totalQuestions > 0
-            ? ((tracker.correctAnswers / tracker.totalQuestions) * 100).toFixed(2)
-            : 0;
 
     return (
-        <div>
-            <h1>Quiz</h1>
+        <div className="quiz-container">
+            <h1>DECA Practice Quiz</h1>
             <div className="question-container">
                 <h2>{currentQuestion.question}</h2>
                 <div className="choices">
@@ -78,11 +95,8 @@ const Quiz = () => {
                     </div>
                 )}
             </div>
-            <div className="tracker">
-                <h3>Tracker</h3>
-                <p>Total Questions Answered: {tracker.totalQuestions}</p>
-                <p>Correct Answers: {tracker.correctAnswers}</p>
-                <p>Accuracy: {accuracy}%</p>
+            <div className="navigation">
+                <a href="/progress">View Progress</a>
             </div>
         </div>
     );
