@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "fire
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
@@ -39,12 +40,21 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="password-input-container">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            className="toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? "👁️" : "🔒"}
+          </button>
+        </div>
         <div>
           <button onClick={handleLogin}>Login</button>
           <button onClick={handleSignUp}>Sign Up</button>
