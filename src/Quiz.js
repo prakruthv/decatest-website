@@ -1,74 +1,59 @@
 import React, { useState } from "react";
-import { auth } from "./firebase";
-import questions from "./questions"; // Assuming your questions are stored in questions.js
+import questions from "./questions";
 
-function Quiz() {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showResult, setShowResult] = useState(false);
-  const [score, setScore] = useState(0);
+const Quiz = () => {
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState("");
+    const [feedback, setFeedback] = useState("");
 
-  const handleAnswerSelect = (choice) => {
-    setSelectedAnswer(choice);
-  };
+    const handleAnswerSubmit = () => {
+        const currentQuestion = questions[currentQuestionIndex];
+        if (selectedAnswer === currentQuestion.correctAnswer) {
+            setFeedback("Correct!");
+        } else {
+            setFeedback(`Wrong! The correct answer is: ${currentQuestion.correctAnswer}`);
+        }
+    };
 
-  const handleSubmit = () => {
-    if (selectedAnswer === questions[currentQuestionIndex].correctAnswer) {
-      setScore(score + 1);
-    }
-    setShowResult(true);
-  };
+    const handleNextQuestion = () => {
+        setFeedback("");
+        setSelectedAnswer("");
+        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+    };
 
-  const handleNextQuestion = () => {
-    setShowResult(false);
-    setSelectedAnswer(null);
-    setCurrentQuestionIndex((prev) => (prev + 1) % questions.length);
-  };
+    const currentQuestion = questions[currentQuestionIndex];
 
-  const handleLogout = () => {
-    auth.signOut();
-  };
-
-  return (
-    <div>
-      <h2>Quiz</h2>
-      <button onClick={handleLogout}>Logout</button>
-
-      <div>
-        <p>{questions[currentQuestionIndex].question}</p>
-        {questions[currentQuestionIndex].choices.map((choice, index) => (
-          <div key={index}>
-            <input
-              type="radio"
-              name="answer"
-              value={choice}
-              onChange={() => handleAnswerSelect(choice)}
-              checked={selectedAnswer === choice}
-            />
-            {choice}
-          </div>
-        ))}
-      </div>
-
-      {!showResult ? (
-        <button onClick={handleSubmit} disabled={!selectedAnswer}>
-          Submit
-        </button>
-      ) : (
+    return (
         <div>
-          <p>
-            {selectedAnswer === questions[currentQuestionIndex].correctAnswer
-              ? "Correct!"
-              : "Incorrect!"}
-          </p>
-          <p>Correct Answer: {questions[currentQuestionIndex].correctAnswer}</p>
-          <button onClick={handleNextQuestion}>Next Question</button>
+            <h1>Quiz</h1>
+            <div className="question-container">
+                <h2>{currentQuestion.question}</h2>
+                <div className="choices">
+                    {currentQuestion.choices.map((choice, index) => (
+                        <label key={index} className="choice">
+                            <input
+                                type="radio"
+                                name="answer"
+                                value={choice}
+                                checked={selectedAnswer === choice}
+                                onChange={(e) => setSelectedAnswer(e.target.value)}
+                            />
+                            {choice}
+                        </label>
+                    ))}
+                </div>
+                <button onClick={handleAnswerSubmit} disabled={!selectedAnswer}>
+                    Submit
+                </button>
+                {feedback && (
+                    <div className="feedback">
+                        <p>{feedback}</p>
+                        <button onClick={handleNextQuestion}>Next Question</button>
+                    </div>
+                )}
+            </div>
         </div>
-      )}
-
-      <p>Score: {score}</p>
-    </div>
-  );
-}
+    );
+};
 
 export default Quiz;
