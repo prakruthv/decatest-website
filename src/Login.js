@@ -5,22 +5,23 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "fire
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
 
     const handleLogin = async () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            console.log("Logged in:", userCredential.user);
+            setMessage(`Logged in as: ${userCredential.user.email}`);
         } catch (error) {
-            console.error("Login error:", error.message);
+            setMessage(`Login failed: ${error.message}`);
         }
     };
 
     const handleSignUp = async () => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("User created:", userCredential.user);
+            setMessage(`User created: ${userCredential.user.email}`);
         } catch (error) {
-            console.error("Sign-up error:", error.message);
+            setMessage(`Sign-up failed: ${error.message}`);
         }
     };
 
@@ -41,6 +42,7 @@ const Login = () => {
             />
             <button onClick={handleLogin}>Login</button>
             <button onClick={handleSignUp}>Sign Up</button>
+            <p>{message}</p> {/* Display feedback messages */}
         </div>
     );
 };
