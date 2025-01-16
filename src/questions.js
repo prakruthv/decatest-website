@@ -113,6 +113,11 @@ const questions = [
     question: "What is the main function of a supply chain?",
     choices: ["Develop advertising strategies", "Manage product distribution from production to consumers", "Create new business ideas", "Provide financial investment advice"],
     correctAnswer: "Manage product distribution from production to consumers"
+  },
+  {
+    question: " Which of the following situations is an unethical action associated with customer relationship management:",
+    choices: ["Allowing customers the ability to opt-out of the e-mail updates that the business provides", "Implementing a frequent-buyers program for the business's customers", "Collecting customer information with authorization to develop a customer profile", "Selling customer lists without the customers' consent to third parties"],
+    correctAnswer: "Selling customer lists without the customers' consent to third parties"
   }
 ];
 
