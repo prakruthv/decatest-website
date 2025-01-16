@@ -1,47 +1,20 @@
-import React, { useState } from "react";
 import { auth } from "./firebase";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleLogin = async () => {
+const handleLogin = async (email, password) => {
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-    } catch (err) {
-      setError(err.message);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log("Logged in:", userCredential.user);
+    } catch (error) {
+        console.error("Login error:", error.message);
     }
-  };
+};
 
-  const handleSignup = async () => {
+const handleSignUp = async (email, password) => {
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
-    } catch (err) {
-      setError(err.message);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log("User created:", userCredential.user);
+    } catch (error) {
+        console.error("Sign-up error:", error.message);
     }
-  };
-
-  return (
-    <div>
-      <h2>Login or Sign Up</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleLogin}>Login</button>
-      <button onClick={handleSignup}>Sign Up</button>
-      {error && <p>{error}</p>}
-    </div>
-  );
-}
-
-export default Login;
+};
