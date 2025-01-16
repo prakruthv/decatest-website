@@ -5,17 +5,16 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "fire
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in:", userCredential.user);
-      setError(""); // Clear error on successful login
+      setError(""); // Clear error
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
-      console.error("Login error:", err.message);
+      setError("Login failed: " + err.message);
     }
   };
 
@@ -23,42 +22,45 @@ const Login = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log("User created:", userCredential.user);
-      setError(""); // Clear error on successful sign-up
+      setError(""); // Clear error
     } catch (err) {
-      setError("Failed to create account. Try a different email.");
-      console.error("Sign-up error:", err.message);
+      setError("Sign-up failed: " + err.message);
     }
   };
 
   return (
     <div className="login-container">
-      <h1>Login or Sign Up</h1>
-      <div>
+      <h1>Welcome to DECA Practice</h1>
+      <div className="login-form">
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="input-field"
         />
-        <div className="password-input-container">
+        <div className="password-container">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="input-field"
           />
           <button
             type="button"
             className="toggle-password"
-            onClick={() => setShowPassword((prev) => !prev)}
+            onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? "👁️" : "🔒"}
           </button>
         </div>
-        <div>
-          <button onClick={handleLogin}>Login</button>
-          <button onClick={handleSignUp}>Sign Up</button>
-        </div>
+        <button className="action-button" onClick={handleLogin}>
+          Log In
+        </button>
+        <button className="action-button" onClick={handleSignUp}>
+          Sign Up
+        </button>
         {error && <p className="error-message">{error}</p>}
       </div>
     </div>
