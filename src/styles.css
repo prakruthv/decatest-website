@@ -1,30 +1,86 @@
-.password-input-container {
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.login-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 10px 0;
+  height: 100vh;
+  background-color: #0033a0; /* DECA blue */
+  color: white;
 }
 
-.password-input-container input {
-  width: 80%;
-  max-width: 300px;
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  background: white;
+  color: black;
+  border-radius: 8px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.input-field {
+  width: 100%;
   padding: 10px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
+  border-radius: 5px;
   font-size: 1rem;
 }
 
-.password-input-container .toggle-password {
+.password-container {
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  flex-grow: 1;
+  border-radius: 5px 0 0 5px;
+}
+
+.toggle-password {
   background-color: #0033a0; /* DECA blue */
-  color: #fff;
+  color: white;
   border: none;
   padding: 10px;
-  font-size: 1rem;
   cursor: pointer;
-  border-radius: 0 4px 4px 0;
-  transition: background-color 0.3s ease;
+  border-radius: 0 5px 5px 0;
 }
 
-.password-input-container .toggle-password:hover {
+.toggle-password:hover {
   background-color: #002080;
+}
+
+.action-button {
+  width: 100%;
+  background-color: #0033a0;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.action-button:hover {
+  background-color: #002080;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
