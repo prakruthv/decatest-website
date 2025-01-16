@@ -1,69 +1,58 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+  font-family: 'Roboto', sans-serif; /* Use Google Fonts for a more modern look */
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
 }
 
-h1 {
-    text-align: center;
-    color: #0033a0; /* DECA blue */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
 }
 
-.quiz-container,
-.progress-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.login-container h1 {
+  font-size: 2rem;
+  color: #0033a0; /* DECA blue */
+  margin-bottom: 20px;
 }
 
-.question-container,
-.feedback,
-.navigation {
-    margin-top: 20px;
+.login-container input {
+  width: 80%;
+  max-width: 300px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
-.feedback {
-    padding: 10px;
-    border-radius: 4px;
-    text-align: center;
+.login-container button {
+  width: 100px;
+  margin: 10px;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #0033a0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.choices label {
-    display: block;
-    margin: 10px 0;
-    font-size: 16px;
+.login-container button:hover {
+  background-color: #002080;
 }
 
-input[type="radio"] {
-    margin-right: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #0033a0; /* DECA blue */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-a {
-    color: #0033a0;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-a:hover {
-    text-decoration: underline;
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
