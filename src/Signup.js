@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "./firebase";
+import { emailSignUp, googleSignIn } from "./firebase";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -9,12 +8,22 @@ const Signup = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  const handleEmailSignup = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear previous errors
+    setErrorMessage("");
     try {
-      await createUserWithEmailAndPassword(email, password);
-      navigate("/quiz"); // Redirect to quiz page after successful signup
+      await emailSignUp(email, password);
+      navigate("/quiz");
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setErrorMessage("");
+    try {
+      await googleSignIn();
+      navigate("/quiz");
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -23,7 +32,7 @@ const Signup = () => {
   return (
     <div className="signup-container">
       <h1>Sign Up</h1>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={handleEmailSignup}>
         <label>Email:</label>
         <input
           type="email"
@@ -39,8 +48,9 @@ const Signup = () => {
           required
         />
         <button type="submit">Sign Up</button>
-        {errorMessage && <p className="error">{errorMessage}</p>}
       </form>
+      <button onClick={handleGoogleSignup}>Sign up with Google</button>
+      {errorMessage && <p className="error">{errorMessage}</p>}
       <p>Already have an account? <a href="/">Login here</a>.</p>
     </div>
   );
