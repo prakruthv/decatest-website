@@ -1,3 +1,4 @@
+
 body {
   font-family: "Roboto", sans-serif;
   background-color: #f4f4f4;
@@ -5,7 +6,7 @@ body {
   padding: 0;
 }
 
-.login-container {
+.login-container, .signup-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +21,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-.login-form {
+form {
   background: white;
   color: black;
   border-radius: 8px;
@@ -31,7 +32,7 @@ h1 {
   text-align: center;
 }
 
-.input-field {
+input {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -40,32 +41,9 @@ h1 {
   font-size: 1rem;
 }
 
-.password-container {
-  display: flex;
-  align-items: center;
-}
-
-.password-container input {
-  flex-grow: 1;
-  border-radius: 5px 0 0 5px;
-}
-
-.toggle-password {
-  background-color: #0033a0; /* DECA blue */
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 0 5px 5px 0;
-}
-
-.toggle-password:hover {
-  background-color: #002080;
-}
-
-.action-button {
+button {
   width: 100%;
-  background-color: #0033a0;
+  background-color: #0033a0; /* DECA blue */
   color: white;
   border: none;
   padding: 10px;
@@ -75,60 +53,21 @@ h1 {
   border-radius: 5px;
 }
 
-.action-button:hover {
+button:hover {
   background-color: #002080;
 }
 
-.error-message {
+.error {
   color: red;
   font-size: 0.9rem;
   margin-top: 10px;
 }
 
-.login-container {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f4f4f4;
-  text-align: center;
+p a {
+  color: #ffd700; /* Gold */
+  text-decoration: none;
 }
 
-.login-container h1 {
-  color: #003366; /* DECA Blue */
+p a:hover {
+  text-decoration: underline;
 }
-
-.login-container label {
-  display: block;
-  margin: 10px 0 5px;
-  font-weight: bold;
-}
-
-.login-container input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.login-container button {
-  width: 100%;
-  padding: 10px;
-  background-color: #003366; /* DECA Blue */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.login-container button:hover {
-  background-color: #002244; /* Darker blue */
-}
-
-.error {
-  color: red;
-  margin-top: 10px;
-}
-
