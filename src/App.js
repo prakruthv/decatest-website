@@ -5,15 +5,15 @@ import Login from "./Login";
 import Progress from "./Progress";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/quiz" element={<Quiz />} />
-                <Route path="/progress" element={<Progress />} />
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/progress" element={<Progress />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
