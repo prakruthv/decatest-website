@@ -25,7 +25,11 @@ const Signup = () => {
       await googleSignIn();
       navigate("/quiz");
     } catch (error) {
-      setErrorMessage(error.message);
+      if (error.code === "auth/unauthorized-domain") {
+        setErrorMessage("Google Sign-In is not authorized for this domain. Please check Firebase settings.");
+      } else {
+        setErrorMessage(error.message);
+      }
     }
   };
 
