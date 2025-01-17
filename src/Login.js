@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "./firebase";
@@ -40,6 +41,7 @@ const Login = () => {
         <button type="submit">Login</button>
         {errorMessage && <p className="error">{errorMessage}</p>}
       </form>
+      <p>Don’t have an account? <a href="/signup">Sign up here</a>.</p>
     </div>
   );
 };
