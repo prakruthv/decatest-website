@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "./firebase";
+import { emailSignIn, googleSignIn } from "./firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,12 +8,22 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleEmailLogin = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear previous errors
+    setErrorMessage("");
     try {
-      await signInWithEmailAndPassword(email, password);
-      navigate("/quiz"); // Redirect to quiz page after successful login
+      await emailSignIn(email, password);
+      navigate("/quiz");
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setErrorMessage("");
+    try {
+      await googleSignIn();
+      navigate("/quiz");
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -23,7 +32,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <h1>Login</h1>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleEmailLogin}>
         <label>Email:</label>
         <input
           type="email"
@@ -39,8 +48,9 @@ const Login = () => {
           required
         />
         <button type="submit">Login</button>
-        {errorMessage && <p className="error">{errorMessage}</p>}
       </form>
+      <button onClick={handleGoogleLogin}>Sign in with Google</button>
+      {errorMessage && <p className="error">{errorMessage}</p>}
       <p>Don’t have an account? <a href="/signup">Sign up here</a>.</p>
     </div>
   );
