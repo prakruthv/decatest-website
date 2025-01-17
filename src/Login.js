@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import { loginUser } from "./firebase";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "./firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage(""); // Clear previous errors
     try {
-      await loginUser(email, password);
-      alert("Login successful!");
+      await signInWithEmailAndPassword(email, password);
+      navigate("/quiz"); // Redirect to quiz page after successful login
     } catch (error) {
       setErrorMessage(error.message);
     }
